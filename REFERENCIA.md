@@ -39,6 +39,8 @@ Arquivo principal. Quando rodado, executa todo o fluxo na ordem:
 4. Para cada processo: busca, resolve captcha, verifica resultado
 5. Gera relatório PDF de falhas ao final
 
+> **Comportamento atual:** ao encontrar o primeiro processo com botão **Peticionar** visível, o loop é interrompido (`break`) — o robô ainda não continua para peticionar nem para os processos seguintes. Isso mudará quando `peticionamento.py` e `download_comprovante.py` forem implementados.
+
 **Como rodar:**
 ```powershell
 .venv\Scripts\activate
@@ -74,22 +76,24 @@ Responsável pelo login no PROJUDI. Faz:
 
 ### `projudi_ba/busca_processo.py`
 Recebe o número do processo e:
-1. Digita no campo de busca
+1. Digita no campo de busca (navegando por 3 camadas de frames: `mainFrame → userMainFrame → iframe do captcha`)
 2. Clica em Submeter
 3. Resolve o captcha de áudio se aparecer
 4. Verifica se o botão **Peticionar** está visível
 5. Se sim → retorna `True` (processo encontrado)
-6. Se não → volta para a busca e retorna `False`
+6. Se não → volta para a busca com `voltar_para_busca()` e retorna `False`
+
+> **Atenção:** o site do PROJUDI usa frames aninhados. Qualquer alteração no layout do site pode quebrar os seletores por XPath.
 
 ---
 
 ### `projudi_ba/peticionamento.py`
-*(Em desenvolvimento)* Vai enviar a petição principal, selecionar o tipo de documento, enviar anexos, digitar a senha de peticionamento e confirmar o protocolo.
+*(Em desenvolvimento — ainda não implementado)* Vai enviar a petição principal, selecionar o tipo de documento, enviar anexos, digitar a senha de peticionamento e confirmar o protocolo.
 
 ---
 
 ### `projudi_ba/download_comprovante.py`
-*(Em desenvolvimento)* Vai baixar o comprovante do protocolo e a cópia integral do processo.
+*(Em desenvolvimento — ainda não implementado)* Vai baixar o comprovante do protocolo e a cópia integral do processo.
 
 ---
 
